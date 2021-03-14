@@ -14,6 +14,7 @@ from pathlib import Path
 import os
 from dotenv import load_dotenv, find_dotenv
 import django_heroku
+from datetime import timedelta
 
 load_dotenv(find_dotenv())
 
@@ -123,13 +124,28 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# DRF Additionals
+REST_FRAMEWORK = {
+
+    # Authentication Classes
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
+
+# Simple JWT Settings
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=1),
+    'REFRESH_TOKEN_LIFETIME': timedelta(hours=24),
+}
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Kolkata'
 
 USE_I18N = True
 
