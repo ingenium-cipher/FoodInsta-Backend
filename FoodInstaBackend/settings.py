@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 from pathlib import Path
 import os
 from dotenv import load_dotenv, find_dotenv
+import django_heroku
 
 load_dotenv(find_dotenv())
 
@@ -144,4 +145,6 @@ MEDIA_URL = '/backend-media/'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'backend-static')
 STATIC_URL = '/backend-static/'
+
+django_heroku.settings(locals())
 
