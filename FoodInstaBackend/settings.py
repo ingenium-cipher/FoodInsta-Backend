@@ -61,16 +61,15 @@ MIDDLEWARE = [
 PHONE_VERIFICATION = {
     'BACKEND': 'phone_verify.backends.twilio.TwilioBackend',
     'OPTIONS': {
-        'SID': 'fake',
-        'SECRET': 'fake',
-        'FROM': '+14755292729',
-        'SANDBOX_TOKEN':'123456',
+        'SID': os.environ['SID'],
+        'SECRET': os.environ['AUTH_TOKEN'],
+        'FROM': os.environ['PHONE_NUMBER'],
     },
     'TOKEN_LENGTH': 6,
-    'MESSAGE': 'Welcome to {app}! Please use security code {security_code} to proceed.',
-    'APP_NAME': 'Phone Verify',
-    'SECURITY_CODE_EXPIRATION_TIME': 3600,  # In seconds only
-    'VERIFY_SECURITY_CODE_ONLY_ONCE': False,  # If False, then a security code can be used multiple times for verification
+    'MESSAGE': 'Welcome to {app}! Your one time password is {security_code}.',
+    'APP_NAME': 'Food Insta',
+    'SECURITY_CODE_EXPIRATION_TIME': 120,  # In seconds only
+    'VERIFY_SECURITY_CODE_ONLY_ONCE': True,  # If False, then a security code can be used multiple times for verification
 }
 
 ROOT_URLCONF = 'FoodInstaBackend.urls'
