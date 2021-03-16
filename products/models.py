@@ -12,13 +12,21 @@ class Product(models.Model):
     name = models.CharField(max_length=50)
     description = models.TextField()
     image = models.ImageField(upload_to=image_directory_path, blank=True)
-    cost = models.PositiveIntegerField(blank=True, null=True)
+    cost = models.PositiveIntegerField(default=0)
+    fresh_upto = models.DateTimeField(auto_now_add=False, blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.name} - Rs. {self.cost}"
 
 class Post(models.Model):
     product = models.OneToOneField(Product, on_delete=models.CASCADE)
     member = models.OneToOneField(Member, on_delete=models.CASCADE)
     address = models.CharField(max_length=100, blank=True)
     location = models.CharField(max_length=100, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.product} posted by {self.member}"
 
 
 # Create your models here.

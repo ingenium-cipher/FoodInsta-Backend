@@ -17,12 +17,13 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         return token
 
 class UserSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(required=False, validators=[UniqueValidator(queryset=User.objects.all())])
     password = serializers.CharField(write_only=True, required=True)
     password2 = serializers.CharField(write_only=True, required=True)
 
     class Meta:
         model = User
-        fields = ('username', 'password', 'password2', 'first_name', 'last_name')
+        fields = ('email', 'username', 'password', 'password2', 'first_name', 'last_name')
         extra_kwargs = {
             'first_name': {'required': True},
             'last_name': {'required': False}
@@ -38,11 +39,10 @@ class UserSerializer(serializers.ModelSerializer):
 class UserRegisterSerializer(serializers.ModelSerializer):
 
     auth_user = UserSerializer()
-    # contact_no = serializers.IntegerField(required=True, max_value=9999999999, min_value=1111111111, validators=[UniqueValidator(queryset=Member.objects.all())])
-
+    
     class Meta:
         model = Member
-        fields = ('auth_user', 'contact_no')
+        fields = ('auth_user', 'contact_no', 'member_type')
 
     def create(self, validated_data):
         user_data = validated_data.pop('auth_user')
