@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'phone_verify',
+    'gdstorage'
 ]
 
 MIDDLEWARE = [
@@ -168,6 +169,8 @@ USE_L10N = True
 
 USE_TZ = True
 
+GOOGLE_DRIVE_STORAGE_JSON_KEY_FILE = os.path.join(BASE_DIR, 'google-credentials.json')
+GOOGLE_DRIVE_MEDIA_ROOT = '/FoodInsta-media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'backend-media')
 MEDIA_URL = '/backend-media/'
 

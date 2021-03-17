@@ -1,6 +1,10 @@
 from django.db import models
 from users.models import *
 import uuid
+from gdstorage.storage import GoogleDriveStorage
+
+# Define Google Drive Storage
+# gd_storage = GoogleDriveStorage()
 
 def image_directory_path(instance, filename):
     print(instance)
@@ -11,7 +15,7 @@ class Product(models.Model):
     static_id = models.UUIDField(max_length=36, unique=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=50)
     description = models.TextField()
-    image = models.ImageField(upload_to=image_directory_path, blank=True)
+    image = models.ImageField(upload_to=image_directory_path, blank=True, storage=GoogleDriveStorage)
     cost = models.PositiveIntegerField(default=0)
     fresh_upto = models.DateTimeField(auto_now_add=False, blank=True, null=True)
 

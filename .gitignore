@@ -5,3 +5,4 @@ __pycache__
 keyconfig.py
 backend-media
 .env
+google-credentials.json
