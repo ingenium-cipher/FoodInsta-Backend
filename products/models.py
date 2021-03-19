@@ -7,7 +7,6 @@ from gdstorage.storage import GoogleDriveStorage
 # gd_storage = GoogleDriveStorage()
 
 def image_directory_path(instance, filename):
-    print(instance)
     return 'Products/' + '{0}-{1}'.format(instance.name, filename.split('.')[0]) + '_UID' \
         + str(instance.static_id)[3:27].replace('-', '81') + '.'+str(filename.split('.')[-1])
 

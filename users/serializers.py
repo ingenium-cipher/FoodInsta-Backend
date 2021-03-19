@@ -23,11 +23,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('email', 'username', 'password', 'password2', 'first_name', 'last_name')
-        extra_kwargs = {
-            'first_name': {'required': True},
-            'last_name': {'required': False}
-        }
+        fields = ('email', 'username', 'password', 'password2')
 
     def validate(self, attrs):
         if attrs['password'] != attrs['password2']:
@@ -36,7 +32,7 @@ class UserSerializer(serializers.ModelSerializer):
         return attrs
 
 
-class UserRegisterSerializer(serializers.ModelSerializer):
+class MemberSerializer(serializers.ModelSerializer):
 
     auth_user = UserSerializer()
     
@@ -44,12 +40,64 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         model = Member
         fields = ('auth_user', 'contact_no', 'member_type')
 
+class IndividualRegisterSerializer(serializers.ModelSerializer):
+
+    member = MemberSerializer()
+
+    class Meta:
+        model = Individual
+        fields = '__all__'
+
     def create(self, validated_data):
-        user_data = validated_data.pop('auth_user')
+        member_data = validated_data.pop('member')
+        user_data = member_data.pop('auth_user')
         user_data.pop('password2')
         auth_user = User.objects.create(**user_data)
         auth_user.set_password(user_data['password'])
         auth_user.save()
 
-        member = Member.objects.create(auth_user=auth_user, contact_no=validated_data['contact_no'])
-        return member
+        member = Member.objects.create(auth_user=auth_user, **member_data)
+        individual = Individual.objects.create(member=member, **validated_data)
+        return individual
+
+class RestaurantRegisterSerializer(serializers.ModelSerializer):
+
+    member = MemberSerializer()
+
+    class Meta:
+        model = Restaurant
+        fields = '__all__'
+
+    def create(self, validated_data):
+        member_data = validated_data.pop('member')
+        user_data = member_data.pop('auth_user')
+        user_data.pop('password2')
+        auth_user = User.objects.create(**user_data)
+        auth_user.set_password(user_data['password'])
+        auth_user.save()
+
+        member = Member.objects.create(auth_user=auth_user, **member_data)
+        restaurant = Restaurant.objects.create(member=member, **validated_data)
+        return  restaurant
+
+class NGORegisterSerializer(serializers.ModelSerializer):
+
+    member = MemberSerializer()
+
+    class Meta:
+        model = NGO
+        fields = '__all__'
+
+    def create(self, validated_data):
+        member_data = validated_data.pop('member')
+        user_data = member_data.pop('auth_user')
+        user_data.pop('password2')
+        auth_user = User.objects.create(**user_data)
+        auth_user.set_password(user_data['password'])
+        auth_user.save()
+
+        member = Member.objects.create(auth_user=auth_user, **member_data)
+        ngo = NGO.objects.create(member=member, **validated_data)
+        return  ngo
+
+    
