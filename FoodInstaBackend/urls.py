@@ -26,6 +26,7 @@ default_router.register('phone', VerificationViewSet, basename='phone')
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('users/', include('users.urls')),
+    path('products/', include('products.urls'))
 ]
 
 urlpatterns += default_router.urls

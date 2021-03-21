@@ -11,17 +11,14 @@ class MyObtainTokenPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
 
 class IndividualRegisterView(generics.CreateAPIView):
-    queryset = Individual.objects.all()
     permission_classes = (AllowAny,)
     serializer_class = IndividualRegisterSerializer
 
 class RestaurantRegisterView(generics.CreateAPIView):
-    queryset = Restaurant.objects.all()
     permission_classes = (AllowAny,)
     serializer_class = RestaurantRegisterSerializer
 
 class NGORegisterView(generics.CreateAPIView):
-    queryset = NGO.objects.all()
     permission_classes = (AllowAny,)
     serializer_class = NGORegisterSerializer
 

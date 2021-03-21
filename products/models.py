@@ -13,7 +13,7 @@ def image_directory_path(instance, filename):
 class Product(models.Model):
     static_id = models.UUIDField(max_length=36, unique=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=50)
-    description = models.TextField()
+    description = models.TextField(blank=True, null=True)
     image = models.ImageField(upload_to=image_directory_path, blank=True, storage=GoogleDriveStorage)
     cost = models.PositiveIntegerField(default=0)
     fresh_upto = models.DateTimeField(auto_now_add=False, blank=True, null=True)
@@ -23,13 +23,13 @@ class Product(models.Model):
 
 class Post(models.Model):
     product = models.OneToOneField(Product, on_delete=models.CASCADE)
-    member = models.OneToOneField(Member, on_delete=models.CASCADE)
+    member = models.ForeignKey(Member, on_delete=models.CASCADE)
     address = models.CharField(max_length=100, blank=True)
     location = models.CharField(max_length=100, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.product} posted by {self.member}"
+        return f"{self.product} posted by {self.member} at {self.created_at}"
 
 
 # Create your models here.
