@@ -68,9 +68,9 @@ PHONE_VERIFICATION = {
         'SECRET': os.environ['AUTH_TOKEN'],
         'FROM': os.environ['PHONE_NUMBER'],
     },
-    'TOKEN_LENGTH': 6,
+    'TOKEN_LENGTH': 4,
     'MESSAGE': 'Welcome to {app}! Your one time password is {security_code}.',
-    'APP_NAME': 'Food Insta',
+    'APP_NAME': 'Foodex',
     'SECURITY_CODE_EXPIRATION_TIME': 120,  # In seconds only
     'VERIFY_SECURITY_CODE_ONLY_ONCE': True,  # If False, then a security code can be used multiple times for verification
 }
@@ -109,7 +109,7 @@ if not os.environ['SERVER'] == 'TRUE':
 }
 
 else:
-    print("Using Postrgresql")
+    print("Using Postgresql")
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -165,9 +165,11 @@ TIME_ZONE = 'Asia/Kolkata'
 
 USE_I18N = True
 
-USE_L10N = True
+USE_L10N = False
 
 USE_TZ = True
+
+DATETIME_FORMAT = '%d-%m-%Y %H:%M:%S'
 
 GOOGLE_DRIVE_STORAGE_JSON_KEY_FILE = os.path.join(BASE_DIR, 'google-credentials.json')
 GOOGLE_DRIVE_MEDIA_ROOT = '/FoodInsta-media/'

@@ -6,3 +6,4 @@ keyconfig.py
 backend-media
 .env
 google-credentials.json
+google-firebase.json

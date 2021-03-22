@@ -13,7 +13,7 @@ def proof_directory_path(instance, filename):
 class Member(models.Model):
     auth_user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='member')
     static_id = models.UUIDField(max_length=36, unique=True, default=uuid.uuid4, editable=False)
-    contact_no = models.BigIntegerField(validators=[MaxValueValidator(9999999999), MinValueValidator(1111111111)], unique=True)
+    contact_no = models.BigIntegerField(validators=[MaxValueValidator(9999999999), MinValueValidator(1111111111)], unique=True, null=True, blank=True)
     member_type = models.CharField(max_length=20, choices=member_type_choices)
 
     def __str__(self):
