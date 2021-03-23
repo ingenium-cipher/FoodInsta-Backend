@@ -5,6 +5,12 @@ from gdstorage.storage import GoogleDriveStorage
 
 # Define Google Drive Storage
 # gd_storage = GoogleDriveStorage()
+order_status_choices = [
+    ('Approved', 'Approved'),
+    ('Pending', 'Pending'),
+    ('Rejected', 'Rejected'),
+    ('Completed', 'Completed'),
+]
 
 def image_directory_path(instance, filename):
     return 'Products/' + '{0}-{1}'.format(instance.name, filename.split('.')[0]) + '_UID' \
@@ -15,6 +21,7 @@ class Product(models.Model):
     description = models.TextField(blank=True, null=True)
     image = models.ImageField(upload_to=image_directory_path, blank=True, storage=GoogleDriveStorage)
     cost = models.PositiveIntegerField(default=0)
+    weight = models.CharField(max_length=10, null=True, blank=True)
     fresh_upto = models.DateTimeField(auto_now_add=False, blank=True, null=True)
 
     def __str__(self):
@@ -43,5 +50,12 @@ class Post(models.Model):
             except:
                 pass
         return new_code
+
+class Order(models.Model):
+    sender = models.ForeignKey(Member, on_delete=models.CASCADE, related_name='sender')
+    receiver = models.ForeignKey(Member, on_delete=models.CASCADE, related_name='receiver')
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    order_status = models.CharField(max_length=30, choices=order_status_choices, default='Pending')
+
 
 # Create your models here.
