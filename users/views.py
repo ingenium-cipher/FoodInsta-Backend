@@ -2,9 +2,10 @@ from django.shortcuts import render
 from .serializers import *
 from rest_framework import generics
 from rest_framework.response import Response
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import *
+from django.shortcuts import get_object_or_404
 
 import firebase_admin
 from firebase_admin import credentials, auth
@@ -19,7 +20,6 @@ class UserLoginView(generics.GenericAPIView):
             cred = credentials.Certificate('google-firebase.json')
             default_app = firebase_admin.initialize_app(cred)
 
-        print(request.body)
         data = json.loads(request.body)
         if "firebase_id" in data:
             firebase_id = data['firebase_id']
@@ -56,5 +56,24 @@ class RestaurantRegisterView(generics.CreateAPIView):
 class NGORegisterView(generics.CreateAPIView):
     permission_classes = (AllowAny,)
     serializer_class = NGORegisterSerializer
+
+class UserProfileView(generics.RetrieveAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = MemberDetailSerializer
+
+    def get_object(self):
+        if 'static_id' in self.request.GET:
+            return get_object_or_404(Member, static_id=self.request.GET['static_id'])
+        return Member.objects.get(auth_user=self.request.user)
+
+class CityListView(generics.ListAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = CityListSerializer
+    queryset = City.objects.all()
+
+class NGOListView(generics.ListAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = NGOListSerializer
+    queryset = NGO.objects.all()
 
 # Create your views here.
