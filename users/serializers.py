@@ -119,6 +119,10 @@ class CityListSerializer(serializers.ModelSerializer):
         model = City
         fields = ('name', )
 
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        return data['name']
+
 class NGOListSerializer(serializers.ModelSerializer):
 
     static_id = serializers.SerializerMethodField()

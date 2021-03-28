@@ -67,12 +67,12 @@ class UserProfileView(generics.RetrieveAPIView):
         return Member.objects.get(auth_user=self.request.user)
 
 class CityListView(generics.ListAPIView):
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (AllowAny,)
     serializer_class = CityListSerializer
     queryset = City.objects.all()
 
 class NGOListView(generics.ListAPIView):
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (AllowAny,)
     serializer_class = NGOListSerializer
     queryset = NGO.objects.all()
 
