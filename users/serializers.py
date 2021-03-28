@@ -4,6 +4,7 @@ from .models import *
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.core.exceptions import ValidationError
 from rest_framework.validators import UniqueValidator
+from rest_framework_simplejwt.tokens import RefreshToken
 
 def create_member(validated_data):
     member_data = validated_data.pop('member')
@@ -31,10 +32,20 @@ class MemberSerializer(serializers.ModelSerializer):
 
     auth_user = UserSerializer()
     city = serializers.CharField(max_length=50)
+    access = serializers.SerializerMethodField()
+    refresh = serializers.SerializerMethodField()
     
     class Meta:
         model = Member
-        fields = ('auth_user', 'contact_no', 'member_type', 'city', 'address', 'profile_pic')
+        fields = ('auth_user', 'contact_no', 'member_type', 'city', 'address', 'profile_pic', 'access', 'refresh')
+
+    def get_access(self, obj):
+        refresh = RefreshToken.for_user(obj.auth_user)
+        return str(refresh.access_token)
+
+    def get_refresh(self, obj):
+        refresh = RefreshToken.for_user(obj.auth_user)
+        return str(refresh)
 
 class IndividualRegisterSerializer(serializers.ModelSerializer):
 
