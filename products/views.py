@@ -21,7 +21,11 @@ class PostListView(generics.ListAPIView):
     def get_queryset(self):
         # print(self.kwargs)
         city_name = self.request.GET['city']
-        city_obj = City.objects.get(name__iexact=city_name)
+        city_qs = City.objects.filter(name=city_name)
+        if city_qs.exists():
+            city_obj = city_qs[0]
+        else:
+            city_obj = City.objects.create(name=city_name)
         return Post.objects.filter(city=city_obj, is_completed=False, product__fresh_upto__gt=timezone.now())
 
 class PostDetailView(generics.RetrieveAPIView):

@@ -9,16 +9,18 @@ from rest_framework_simplejwt.tokens import RefreshToken
 def create_member(validated_data):
     member_data = validated_data.pop('member')
     city_name = member_data.pop('city')
-    city = City.objects.filter(name__iexact = city_name)
-    if not city.exists():
-        raise ValidationError("Enter a valid city")
+    city_qs = City.objects.filter(name = city_name)
+    if city_qs.exists():
+        city_obj = city_qs[0]
+    else:
+        city_obj = City.objects.create(name=city_name)
     email = member_data.pop('auth_user')['email']
     username = email.split('@')[0]
     auth_user = User.objects.create(email=email, username=username)
     auth_user.set_password(username + '@123')
     auth_user.save()
 
-    return Member.objects.create(auth_user=auth_user, city = city[0], **member_data)
+    return Member.objects.create(auth_user=auth_user, city = city_obj, **member_data)
 
 class UserSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(required=True, validators=[UniqueValidator(queryset=User.objects.all())])

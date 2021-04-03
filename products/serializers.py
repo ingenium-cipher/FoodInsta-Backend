@@ -47,7 +47,7 @@ class PostDetailSerializer(PostListSerializer):
 
     class Meta(PostListSerializer.Meta):
         model = Post
-        fields = PostListSerializer.Meta.fields + ('member', 'location', 'address', 'request_status')
+        fields = PostListSerializer.Meta.fields + ('member', 'location', 'address', 'request_status', 'contact_no')
 
     def get_request_status(self, obj):
         order = obj.post_orders.filter(ordered_by__auth_user = self.context['request'].user)
@@ -62,7 +62,7 @@ class PostRegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = ('product', 'address', 'location', 'city')
+        fields = ('product', 'address', 'location', 'city', 'contact_no')
     
     def create(self, validated_data):
         product_data = validated_data.pop('product')
@@ -70,7 +70,11 @@ class PostRegisterSerializer(serializers.ModelSerializer):
         city_obj = member.city
         if 'city' in validated_data:
             city_name = validated_data.pop('city')
-            city_obj = City.objects.get(name__iexact=city_name)
+            city_qs = City.objects.filter(name=city_name)
+            if city_qs.exists():
+                city_obj = city_qs[0]
+            else:
+                city_obj = City.objects.create(name=city_name)
         product = Product.objects.create(**product_data)
         post = Post.objects.create(product=product, member = member, city=city_obj, **validated_data)
         return post

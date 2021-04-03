@@ -47,6 +47,7 @@ class Post(models.Model):
     is_completed = models.BooleanField(default=False)
     is_deleted = models.BooleanField(default=False)
     city = models.ForeignKey(City, on_delete=models.CASCADE)
+    contact_no = models.BigIntegerField(validators=[MaxValueValidator(9999999999), MinValueValidator(1111111111)])
 
     def __str__(self):
         return f"{self.product} posted by {self.member} at {self.created_at}"

@@ -68,7 +68,6 @@ class Individual(models.Model):
 
 class Restaurant(models.Model):
     member = models.OneToOneField(Member, on_delete=models.CASCADE, related_name='restaurant')
-    landline_number = models.CharField(max_length=20)
     name = models.CharField(max_length=50)
     website = models.URLField(max_length = 200, blank=True, null=True)
 
