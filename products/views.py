@@ -26,7 +26,7 @@ class PostListView(generics.ListAPIView):
             city_obj = city_qs[0]
         else:
             city_obj = City.objects.create(name=city_name)
-        return Post.objects.filter(city=city_obj, is_completed=False, product__fresh_upto__gt=timezone.now())
+        return Post.objects.filter(city=city_obj, is_completed=False, product__fresh_upto__gt=timezone.now()).exclude(member__auth_user=self.request.user)
 
 class PostDetailView(generics.RetrieveAPIView):
     permission_classes = (IsAuthenticated,)
