@@ -32,13 +32,25 @@ class PostListSerializer(serializers.ModelSerializer):
     product = ProductSerializer()
     created_at = serializers.DateTimeField(format=settings.DATETIME_FORMAT)
     num_of_requests = serializers.SerializerMethodField()
+    author_name = serializers.SerializerMethodField()
+    author_pic = serializers.SerializerMethodField()
+    author_type = serializers.SerializerMethodField()
 
     class Meta:
         model = Post
-        fields = ('product', 'created_at', 'static_id', 'num_of_requests')
+        fields = ('product', 'created_at', 'static_id', 'num_of_requests', 'author_name', 'author_pic', 'author_type')
     
     def get_num_of_requests(self, obj):
         return obj.post_orders.all().count()
+
+    def get_author_name(self, obj):
+        return obj.member.get_name()
+
+    def get_author_pic(self, obj):
+        return obj.member.get_profile_pic_url()
+
+    def get_author_type(self, obj):
+        return obj.member.member_type
 
 class PostDetailSerializer(PostListSerializer):
 
