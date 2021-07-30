@@ -9,7 +9,7 @@ import pytz
 class ProductSerializer(serializers.ModelSerializer):
 
     fresh_upto = serializers.DateTimeField(input_formats=[settings.DATETIME_FORMAT], format=settings.DATETIME_FORMAT, required=False)
-    image = serializers.SerializerMethodField()
+    # image = serializers.SerializerMethodField()
 
     class Meta:
         model = Product
@@ -24,8 +24,10 @@ class ProductSerializer(serializers.ModelSerializer):
             raise ValidationError("Food should be fresh after current time.")
         return value
 
-    def get_image(self, obj):
-        return obj.get_image_url()
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data['image'] = instance.get_image_url()
+        return data
 
 class PostListSerializer(serializers.ModelSerializer):
 
@@ -78,6 +80,7 @@ class PostRegisterSerializer(serializers.ModelSerializer):
     
     def create(self, validated_data):
         product_data = validated_data.pop('product')
+        print(product_data.get('image', None))
         member = Member.objects.filter(auth_user=self.context['request'].user)[0]
         city_obj = member.city
         if 'city' in validated_data:

@@ -15,7 +15,7 @@ order_status_choices = [
 ]
 
 def image_directory_path(instance, filename):
-    return 'Products/' + '{0}-{1}'.format(str(instance.post.static_id)[3:27].replace('-', '81'), filename.split('.')[0]) + '.'+str(filename.split('.')[-1])
+    return 'Products/' + '{0}-{1}'.format(instance.fresh_upto, filename.split('.')[0]) + '.'+str(filename.split('.')[-1])
 
 class Product(models.Model):
     description = models.TextField(blank=True, null=True)
