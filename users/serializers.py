@@ -101,13 +101,17 @@ class NGORegisterSerializer(serializers.ModelSerializer):
 class MemberDetailSerializer(serializers.ModelSerializer):
 
     name = serializers.SerializerMethodField()
+    rating = serializers.SerializerMethodField()
 
     class Meta:
         model = Member
-        fields = ('contact_no', 'member_type', 'profile_pic', 'address', 'city', 'name')
+        fields = ('contact_no', 'member_type', 'profile_pic', 'address', 'city', 'name', 'rating')
 
     def get_name(self, obj):
         return obj.get_name()
+
+    def get_rating(self, obj):
+        return obj.get_rating()
 
     def to_representation(self, instance):
         data = super().to_representation(instance)

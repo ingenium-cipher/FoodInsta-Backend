@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from .serializers import *
-from rest_framework import generics
+from rest_framework import generics, pagination, viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from .models import *
@@ -8,6 +8,23 @@ from .pagination import *
 from django.utils import timezone
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
+
+class PostViewSet(viewsets.ModelViewSet):
+    permission_classes = (IsAuthenticated, )
+
+    def list(self, request):
+        serializer_class = PostListSerializer
+        pagination_class = PostListPagination
+
+    def get_queryset(self):
+        # print(self.kwargs)
+        city_name = self.request.GET['city']
+        city_qs = City.objects.filter(name=city_name)
+        if city_qs.exists():
+            city_obj = city_qs[0]
+        else:
+            city_obj = City.objects.create(name=city_name)
+        return Post.objects.filter(city=city_obj, is_completed=False, product__fresh_upto__gt=timezone.now()).exclude(member__auth_user=self.request.user)
 
 class PostCreateView(generics.CreateAPIView):
     permission_classes = (IsAuthenticated,)

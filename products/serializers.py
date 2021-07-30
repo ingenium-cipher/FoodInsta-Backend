@@ -37,10 +37,11 @@ class PostListSerializer(serializers.ModelSerializer):
     author_name = serializers.SerializerMethodField()
     author_pic = serializers.SerializerMethodField()
     author_type = serializers.SerializerMethodField()
+    author_rating = serializers.SerializerMethodField()
 
     class Meta:
         model = Post
-        fields = ('product', 'created_at', 'static_id', 'num_of_requests', 'author_name', 'author_pic', 'author_type')
+        fields = ('product', 'created_at', 'static_id', 'num_of_requests', 'author_name', 'author_pic', 'author_type', 'author_rating')
     
     def get_num_of_requests(self, obj):
         return obj.post_orders.all().count()
@@ -53,6 +54,9 @@ class PostListSerializer(serializers.ModelSerializer):
 
     def get_author_type(self, obj):
         return obj.member.member_type
+
+    def get_author_rating(self, obj):
+        return obj.member.get_rating()
 
 class PostDetailSerializer(PostListSerializer):
 
@@ -133,16 +137,20 @@ class UserOrderListSerializer(serializers.ModelSerializer):
     ordered_to = serializers.SerializerMethodField()
     created_time = serializers.DateTimeField(format=settings.DATETIME_FORMAT)
     image = serializers.SerializerMethodField()
-    
+    static_id = serializers.SerializerMethodField()
+
     class Meta:
         model = Order
-        fields = ('ordered_to', 'created_time', 'order_status', 'image')
+        fields = ('ordered_to', 'created_time', 'order_status', 'image', 'static_id')
 
     def get_ordered_to(self, obj):
         return obj.post.member.get_name()
 
     def get_image(self, obj):
         return obj.post.product.get_image_url()
+
+    def get_static_id(self, obj):
+        return obj.post.static_id
 
 class RequestListSerializer(serializers.ModelSerializer):
 

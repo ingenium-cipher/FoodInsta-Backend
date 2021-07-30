@@ -4,6 +4,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 import uuid
 from gdstorage.storage import GoogleDriveStorage
 from django.core.exceptions import ValidationError
+from django.db.models import Q, Sum
 
 gender_choices = [('Male', 'Male'), ('Female', 'Female'), ('Others', 'Others')]
 member_type_choices = [('Individual', 'Individual'), ('Restaurant', 'Restaurant'), ('NGO', 'NGO')]
@@ -46,6 +47,27 @@ class Member(models.Model):
             print(self.profile_pic.url)
             return self.profile_pic.url.split('&')[0]
         return None
+
+    def get_rating(self):
+        qs = MemberRating.objects.filter(rated_to=self)
+        count = qs.count()
+        if count == 0:
+            return 0
+        total_rating = qs.aggregate(sum=Sum('rating')).get('sum')
+        return total_rating/qs.count()
+
+class MemberRating(models.Model):
+    rated_by = models.ForeignKey(Member, on_delete=models.CASCADE, related_name='rated_by')
+    rated_to = models.ForeignKey(Member, on_delete=models.CASCADE, related_name='rated_to')
+    rating = models.IntegerField('rating')
+
+    class Meta:
+        unique_together = ('rated_by', 'rated_to')
+
+    def save(self, *args, **kwargs):
+        if self.rated_by == self.rated_to:
+            raise ValidationError("You cannot rate yourself!")
+        super().save(*args, **kwargs)
 
 class Individual(models.Model):
     member = models.OneToOneField(Member, on_delete=models.CASCADE, related_name='individual')
